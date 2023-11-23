@@ -1,0 +1,52 @@
+import requests
+def find_nearby_markets(api_key, location, radius=2000):
+    parameters = {
+        'location': location,
+        'radius': radius,
+        'type': 'supermarket',
+        'key': api_key
+    }
+
+    response = requests.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json', params=parameters)
+    results = response.json()
+
+    if results['status'] == 'OK':
+        return results['results']
+    else:
+        print("")
+        return []
+
+def print_market_info(market):
+    print(f"Name: {market['name']}")
+    print(f"Address: {market['vicinity']}")
+    print("")
+
+def get_user_input():
+    api_key = input("Enter your Google Places API key: ").strip()
+    location = input("Enter the location (latitude,longitude): ").strip()
+    return api_key, location
+
+def add_market_data():
+    market_name = input("Enter the market name: ").strip()
+    market_address = input("Enter the market address: ").strip()
+    return market_name, market_address
+
+def main():
+    api_key, location = get_user_input()
+    markets = find_nearby_markets(api_key, location)
+
+    if markets:
+        print("Nearby Markets:")
+        for market in markets:
+            print_market_info(market)
+    else:
+        print("No markets found.")
+
+    market_name, market_address = add_market_data()
+    print(f"Added Market Data:")
+    print(f"Name: {market_name}")
+    print(f"Address: {market_address}")
+
+if __name__ == "__main__":
+    main()
+
